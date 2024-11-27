@@ -9,19 +9,29 @@ services:
     network_mode: host
     volumes:
       - ./content:/var/www/html/
+      - ./content/uploaded:/var/www/html/uploaded
 
     command: php -S 0.0.0.0:1234
 
     tty: true
 
   db:
-    image: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile_db
+      args:
+        UID: 1000
+
+    container_name: postgres
     restart: always
     network_mode: host
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: postgres
+
+    user: "postgres:postgres"
+
     volumes:
-      - mysql-data:/var/lib/postgres
+      - ./sql_scripts:/var/lib/postgresql/scripts
 
   adminer:
     image: adminer
@@ -29,6 +39,3 @@ services:
       - db
     restart: always
     network_mode: host
-
-volumes:
-  mysql-data:

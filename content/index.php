@@ -12,6 +12,16 @@
 	</head>
 	<body>
 		<script src="bootstrap/bootstrap.js"></script>
+		<?php
+			$config = include('config/config.php');
+			// Подключение к базе данных: host, dbname, username, password
+			try {
+				$dsn = 'pgsql:host=' . $config['host'] . ';dbname=' . $config['dbname'];
+				$pdo = new PDO($dsn, $config['username'], $config['password']);
+			} catch (PDOException $e) {
+				die('Подключение не удалось: ' . $e->getMessage());
+			}
+		?>
 
 	<div class="screen">
 		<div class="header">
@@ -49,104 +59,24 @@
 				</div>
 			</div>
 			<div class="content-main">
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
 
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
+				<?php
+					$sql = "SELECT * FROM posts";
+					$result = $pdo->prepare($sql);
+					$result->execute();
 
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
+					while($post = $result->fetch(PDO::FETCH_ASSOC)):
+				?>
+					<div class="image-container">
+						<img src="uploaded/<?= htmlspecialchars($post['content']) ?>">
+						<div class="image-info">
+							<img src="img/clock.png" class="white clock" />
+							<span class="image-text">Добавлено</span>
+							<span class="image-date"><?= htmlspecialchars($post['created_at']) ?></span>
+						</div>
 					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
-				<div class="image-container">
-					<img src="img/image.jpg">
-					<div class="image-info">
-						<img src="img/clock.png" class="white clock" />
-						<span class="image-text">Добавлено</span>
-						<span class="image-date">15 августа</span>
-					</div>
-				</div>
+                <?php endwhile; ?>
+
 			</div>
 			<div class="content-more">
 				<a href="" class="button-light full-width">
@@ -154,24 +84,6 @@
 					<span>Показать ещё</span>
 				</a>
 			</div>
-
-			<style type="text/css">
-				.shaded{
-					filter: grayscale(80%) blur(1px);
-				}
-			</style>
-
-			<script type="text/javascript">
-				let containers = document.getElementsByClassName('image-container');
-
-				containers[1].addEventListener('mouseover', function(){
-					this.classList.add('shaded');
-				})
-
-				containers[1].addEventListener('mouseout', function(){
-					this.classList.remove('shaded');
-				})
-			</script>
 		</div>
 
 		<hr>

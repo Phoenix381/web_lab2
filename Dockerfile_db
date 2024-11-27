@@ -1,0 +1,12 @@
+FROM postgres:16
+
+# entrypoint script
+COPY ./sql_scripts/start.sh /docker-entrypoint-initdb.d/start.sh
+RUN chmod +x /docker-entrypoint-initdb.d/start.sh
+
+# setting up user
+ARG UID
+RUN groupmod -g $UID postgres
+RUN usermod -u $UID -g $UID postgres
+USER postgres
+WORKDIR /var/lib/postgresql
