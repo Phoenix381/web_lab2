@@ -21,6 +21,17 @@
 			} catch (PDOException $e) {
 				die('Подключение не удалось: ' . $e->getMessage());
 			}
+
+			setlocale(LC_TIME, "ru-RU");
+
+			$fmt = new IntlDateFormatter(
+				'ru_RU', 
+				IntlDateFormatter::SHORT, 
+				IntlDateFormatter::NONE, 
+				'Europe/Moscow',
+				IntlDateFormatter::GREGORIAN,
+				'dd MMMM'
+			);
 		?>
 
 	<div class="screen">
@@ -45,10 +56,25 @@
 		<hr>
 
 		<div class="content">
+			<?php
+				$sql = "SELECT * FROM posts";
+				$posts = $pdo->prepare($sql);
+				$posts->execute();
+
+				$sql = "SELECT MAX(created_at) FROM posts";
+				$last = $pdo->prepare($sql);
+				$last->execute();
+				$last = $last->fetch(PDO::FETCH_ASSOC);
+			?>
+
 			<div class="content-top">
 				<div>
 					<h1>	
-						Август, 2022
+						<!-- <?= date( "d F", strtotime($last['max'])) ?> -->
+						<?php
+							$date = $fmt->format(strtotime($last['max']));
+							echo $date; 
+						?>
 					</h1>
 				</div>
 				<div>
@@ -60,19 +86,13 @@
 			</div>
 			<div class="content-main">
 
-				<?php
-					$sql = "SELECT * FROM posts";
-					$result = $pdo->prepare($sql);
-					$result->execute();
-
-					while($post = $result->fetch(PDO::FETCH_ASSOC)):
-				?>
+				<?php while($post = $posts->fetch(PDO::FETCH_ASSOC)): ?>
 					<div class="image-container">
 						<img src="uploaded/<?= htmlspecialchars($post['content']) ?>">
 						<div class="image-info">
 							<img src="img/clock.png" class="white clock" />
 							<span class="image-text">Добавлено</span>
-							<span class="image-date"><?= htmlspecialchars($post['created_at']) ?></span>
+							<span class="image-date"><?= $fmt->format(strtotime($post['created_at']))?></span>
 						</div>
 					</div>
                 <?php endwhile; ?>

@@ -240,6 +240,9 @@ div.controls a:hover {
     width: auto;
     border-radius: 20px;
     align-items: center;
+
+    width: 285px;
+    object-fit: cover;
 }
 
 
