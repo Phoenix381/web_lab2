@@ -17,6 +17,11 @@ RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
 RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 RUN apt-get install -y git
 
+# WORKDIR /var/www/html
+# RUN mkdir -p tools/php-cs-fixer
+# RUN composer require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer
+# RUN tools/php-cs-fixer/vendor/bin/php-cs-fixer fix content
+
 # NVM
 RUN mkdir /root/.nvm
 ENV NVM_DIR /root/.nvm

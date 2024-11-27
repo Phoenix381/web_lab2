@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+
+    container_name: php
     network_mode: host
     volumes:
       - ./content:/var/www/html/

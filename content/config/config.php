@@ -1,9 +1,9 @@
 <?php
+
 return array(
-    'host' => 'localhost',  
+    'host' => 'localhost',
     'dbname' => 'postgres',
     'username' => 'postgres',
     'password' => 'postgres',
     'charset' => 'utf8',
 );
-?>

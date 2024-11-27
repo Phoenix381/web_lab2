@@ -13,25 +13,25 @@
 	<body>
 		<script src="bootstrap/bootstrap.js"></script>
 		<?php
-			$config = include('config/config.php');
-			// Подключение к базе данных: host, dbname, username, password
-			try {
-				$dsn = 'pgsql:host=' . $config['host'] . ';dbname=' . $config['dbname'];
-				$pdo = new PDO($dsn, $config['username'], $config['password']);
-			} catch (PDOException $e) {
-				die('Подключение не удалось: ' . $e->getMessage());
-			}
+            $config = include('config/config.php');
+		// Подключение к базе данных: host, dbname, username, password
+		try {
+		    $dsn = 'pgsql:host=' . $config['host'] . ';dbname=' . $config['dbname'];
+		    $pdo = new PDO($dsn, $config['username'], $config['password']);
+		} catch (PDOException $e) {
+		    die('Подключение не удалось: ' . $e->getMessage());
+		}
 
-			setlocale(LC_TIME, "ru-RU");
+		setlocale(LC_TIME, "ru-RU");
 
-			$fmt = new IntlDateFormatter(
-				'ru_RU', 
-				IntlDateFormatter::SHORT, 
-				IntlDateFormatter::NONE, 
-				'Europe/Moscow',
-				IntlDateFormatter::GREGORIAN,
-				'dd MMMM'
-			);
+		$fmt = new IntlDateFormatter(
+		    'ru_RU',
+		    IntlDateFormatter::SHORT,
+		    IntlDateFormatter::NONE,
+		    'Europe/Moscow',
+		    IntlDateFormatter::GREGORIAN,
+		    'dd MMMM'
+		);
 		?>
 
 	<div class="screen">
@@ -57,24 +57,24 @@
 
 		<div class="content">
 			<?php
-				$sql = "SELECT * FROM posts";
-				$posts = $pdo->prepare($sql);
-				$posts->execute();
+		        $sql = "SELECT * FROM posts";
+		$posts = $pdo->prepare($sql);
+		$posts->execute();
 
-				$sql = "SELECT MAX(created_at) FROM posts";
-				$last = $pdo->prepare($sql);
-				$last->execute();
-				$last = $last->fetch(PDO::FETCH_ASSOC);
-			?>
+		$sql = "SELECT MAX(created_at) FROM posts";
+		$last = $pdo->prepare($sql);
+		$last->execute();
+		$last = $last->fetch(PDO::FETCH_ASSOC);
+		?>
 
 			<div class="content-top">
 				<div>
 					<h1>	
-						<!-- <?= date( "d F", strtotime($last['max'])) ?> -->
+						<!-- <?= date("d F", strtotime($last['max'])) ?> -->
 						<?php
-							$date = $fmt->format(strtotime($last['max']));
-							echo $date; 
-						?>
+		                $date = $fmt->format(strtotime($last['max']));
+		echo $date;
+		?>
 					</h1>
 				</div>
 				<div>
