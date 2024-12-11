@@ -1,8 +1,9 @@
+<?php session_start(); ?>
 <html>
 
 	<head>
 		<title>
-			Загрузить
+			Просмотр
 		</title>
 
 		<meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -42,9 +43,24 @@
 					Скриншоты
 				</h2>
 			</div>
-			<div class="controls">
-				<a href="">Регистрация</a>
-				<a href="">Вход</a>
+			
+			<div id="auth" class="controls">
+				<div id="welcome">
+					
+				</div>
+				<a id="logout-button" role="button">
+					Выход
+				</a>
+			</div>
+
+			<div id="noauth" class="controls">
+				<a id="register" data-bs-toggle="modal" data-bs-target="#registerModal">
+					Регистрация
+				</a>
+
+				<a id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
+					Вход
+				</a>
 			</div>
 		</div>
 
@@ -100,6 +116,35 @@
 			</div>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		let logoutBtn = document.getElementById('logout-button');
+
+		// logout
+		logoutBtn.addEventListener('click', () => {
+			fetch('/logout.php', {
+				method: 'POST',
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(result => {
+				console.log(result);
+
+				window.location.href = 'index.php';
+			})
+			.catch(error => console.log(error));
+		})
+
+		<?php if(isset($_SESSION['name'])): ?>
+			welcome.innerHTML = 'Привет, <?php echo $_SESSION['name']; ?>';
+			auth.style.display = 'flex';
+			noauth.style.display = 'none';
+		<?php else: ?>
+			auth.style.display = 'none';
+			noauth.style.display = 'flex';
+		<?php endif; ?>
+	</script>
 
 	</body>
 </html>

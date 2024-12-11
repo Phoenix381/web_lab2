@@ -1,5 +1,5 @@
+<?php session_start(); ?>
 <html>
-
 	<head>
 		<title>
 			Скриншоты
@@ -32,8 +32,6 @@
 			    IntlDateFormatter::GREGORIAN,
 			    'dd MMMM'
 			);
-
-			session_start();
 		?>
 
 	<div class="screen">
@@ -44,24 +42,27 @@
 					Скриншоты
 				</h2>
 			</div>
-			<div class="controls">
-				<?php if(isset($_SESSION['name'])): ?>
-					<p>
-						<?php echo $_SESSION['name']; ?>
-					</p>
-					<a id="logout" href="logout.php">
-						Выход
-					</a>
-				<?php else: ?>
-					<a id="register" data-bs-toggle="modal" data-bs-target="#registerModal">
-						Регистрация
-					</a>
 
-					<a id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
-						Вход
-					</a>
-				<?php endif; ?>
+
+			<div id="auth" class="controls">
+				<div id="welcome">
+					
+				</div>
+				<a id="logout-button" role="button">
+					Выход
+				</a>
 			</div>
+
+			<div id="noauth" class="controls">
+				<a id="register" data-bs-toggle="modal" data-bs-target="#registerModal">
+					Регистрация
+				</a>
+
+				<a id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
+					Вход
+				</a>
+			</div>
+
 		</div>
 
 		<hr>
@@ -89,7 +90,7 @@
 					</h1>
 				</div>
 				<div>
-					<a href="upload.html" class="button-normal">
+					<a href="upload.php" class="button-normal">
 						<img src="img/add.png" class="white" width="24px" />
 						<span class="add-text"> Добавить скриншот</span>
 					</a>
@@ -209,14 +210,20 @@
 		        	<span>Авторизация</span>
 		        </div>
 		        <div>
-		        	<form>
+		        	<form id="login-form">
 			          <div class="mb-3 control-row">
-			            <input type="email" class="form-control py-2" name="mail" placeholder="Email" required>
-			            <input type="password" class="form-control py-2" name="pass" placeholder="Пароль" required>
+			          	<div>
+				            <input type="email" class="form-control py-2" name="mail" placeholder="Email" required>
+			          		<p id='mail-error' class='error'></p>
+			          	</div>
+			          	<div>
+				            <input type="password" class="form-control py-2" name="password" placeholder="Пароль" required>
+				            <p id='password-error' class='error'></p>
+				        </div>
 			          </div>
 
 					  <div class="d-grid gap-2 mt-2">
-						  <button type="submit" class="btn btn-primary py-2" disabled>Войти</button>
+						  <button type="button" class="btn btn-primary py-2" id="login-button">Войти</button>
 					  </div>
 
 					  <div class="agreement mt-4">
@@ -235,6 +242,18 @@
 		let registerForm = document.getElementById('register-form');
 		let registerBtn = document.getElementById('register-button');
 
+		let loginForm = document.getElementById('login-form');
+		let loginBtn = document.getElementById('login-button');
+		let logoutBtn = document.getElementById('logout-button');
+
+		let registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+		let loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+
+		let auth = document.getElementById('auth');
+		let noauth = document.getElementById('noauth');
+		let welcome = document.getElementById('welcome');
+
+		// register
 		registerBtn.addEventListener('click', () => {
 			if (registerForm.checkValidity()) {
 				// console.log(new FormData(registerForm).values());
@@ -262,6 +281,12 @@
 					} else {
 						console.log(result);
 						console.log('Регистрация прошла успешно');
+
+                        welcome.innerHTML = `Привет, ${result.name}`;
+						auth.style.display = 'flex';
+						noauth.style.display = 'none';
+
+						registerModal.hide();
 					}
 				})
 				.catch(error => console.log(error));
@@ -269,6 +294,76 @@
 		    	registerForm.reportValidity();
 		    }
 		});
+
+		// login
+		loginBtn.addEventListener('click', () => {
+			if (loginForm.checkValidity()) {
+				// console.log(new FormData(loginForm).values());
+				fetch('/login.php', {
+					method: 'POST',
+					body: new FormData(loginForm)
+				})
+				.then(response => {
+					return response.json();
+				})
+				.then(result => {
+					console.log(result);
+
+					if(!result.success) {
+						console.log(result.errors);
+						console.log('Авторизация не прошла');
+
+						if (result.errors.password) {
+							document.getElementById('password-error').innerHTML = result.errors.password;
+						} else {
+							document.getElementById('password-error').innerHTML = '';
+						}
+
+						if (result.errors.mail) {
+							document.getElementById('mail-error').innerHTML = result.errors.mail;
+						} else {
+							document.getElementById('mail-error').innerHTML = '';
+						}
+					} else {
+						console.log(result);
+						console.log('Авторизация прошла успешно');
+
+						welcome.innerHTML = `Привет, ${result.name}`;
+						auth.style.display = 'flex';
+						noauth.style.display = 'none';
+
+						loginModal.hide();
+					}
+				})
+				.catch(error => console.log(error));
+			}
+		})
+
+		// logout
+		logoutBtn.addEventListener('click', () => {
+			fetch('/logout.php', {
+				method: 'POST',
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(result => {
+				console.log(result);
+
+				auth.style.display = 'none';
+				noauth.style.display = 'flex';
+			})
+			.catch(error => console.log(error));
+		})
+
+		<?php if(isset($_SESSION['name'])): ?>
+			welcome.innerHTML = 'Привет, <?php echo $_SESSION['name']; ?>';
+			auth.style.display = 'flex';
+			noauth.style.display = 'none';
+		<?php else: ?>
+			auth.style.display = 'none';
+			noauth.style.display = 'flex';
+		<?php endif; ?>
 	</script>
 
 	</body>

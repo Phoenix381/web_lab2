@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 
 
@@ -114,10 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $query->execute();
 
-    session_start();
     $_SESSION['name'] = $_POST['name'];
     
     http_response_code(200);
-    echo json_encode(['success' => true]);
+    echo json_encode(['success' => true, 'name' => $_POST['name']]);
     exit;
 }
