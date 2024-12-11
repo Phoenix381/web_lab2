@@ -88,8 +88,10 @@
 
 				<?php while($post = $posts->fetch(PDO::FETCH_ASSOC)): ?>
 					<div class="image-container">
-						<img src="uploaded/<?= htmlspecialchars($post['content']) ?>">
-						<div class="image-info">
+						<a href="image.php?id=<?= htmlspecialchars($post['id']) ?>">
+							<img src="uploaded/<?= htmlspecialchars($post['content']) ?>" class="post-img">
+						</a>
+						<div class="image-info">	
 							<img src="img/clock.png" class="white clock" />
 							<span class="image-text">Добавлено</span>
 							<span class="image-date"><?= $fmt->format(strtotime($post['created_at']))?></span>
