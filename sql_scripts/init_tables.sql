@@ -2,10 +2,10 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE  users (
     id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    password TEXT NOT NULL
+    name varchar(255) NOT NULL,
+    email varchar(255) NOT NULL,
+    phone varchar(255) NOT NULL,
+    password varchar(255) NOT NULL
 );
 
 INSERT INTO users (name, email, phone, password) VALUES
@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS posts;
 
 CREATE TABLE posts (
     id SERIAL PRIMARY KEY,
-    content TEXT NOT NULL,
+    content varchar(255) NOT NULL,
     direct_link BOOLEAN NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     author_id INTEGER NOT NULL,

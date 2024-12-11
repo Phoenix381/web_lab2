@@ -24,7 +24,7 @@ services:
       args:
         UID: 1000
 
-    container_name: postgres
+    container_name: postgres_db
     restart: always
     network_mode: host
     environment:

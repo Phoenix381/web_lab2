@@ -293,6 +293,14 @@ div.controls a:hover {
     color: blue;
 }
 
+.error {
+    color: red;
+    font-size: 12px;
+    margin-left: 0.5em;
+    margin-bottom: 0;
+}
+
+
 @media screen and (max-width: 1220px) {
     .screen {
 /*        min-width: 688px;*/

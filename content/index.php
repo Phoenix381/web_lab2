@@ -14,24 +14,26 @@
 		<script src="bootstrap/bootstrap.js"></script>
 		<?php
             $config = include('config/config.php');
-		// Подключение к базе данных: host, dbname, username, password
-		try {
-		    $dsn = 'pgsql:host=' . $config['host'] . ';dbname=' . $config['dbname'];
-		    $pdo = new PDO($dsn, $config['username'], $config['password']);
-		} catch (PDOException $e) {
-		    die('Подключение не удалось: ' . $e->getMessage());
-		}
+			// Подключение к базе данных: host, dbname, username, password
+			try {
+			    $dsn = 'pgsql:host=' . $config['host'] . ';dbname=' . $config['dbname'];
+			    $pdo = new PDO($dsn, $config['username'], $config['password']);
+			} catch (PDOException $e) {
+			    die('Подключение не удалось: ' . $e->getMessage());
+			}
 
-		setlocale(LC_TIME, "ru-RU");
+			setlocale(LC_TIME, "ru-RU");
 
-		$fmt = new IntlDateFormatter(
-		    'ru_RU',
-		    IntlDateFormatter::SHORT,
-		    IntlDateFormatter::NONE,
-		    'Europe/Moscow',
-		    IntlDateFormatter::GREGORIAN,
-		    'dd MMMM'
-		);
+			$fmt = new IntlDateFormatter(
+			    'ru_RU',
+			    IntlDateFormatter::SHORT,
+			    IntlDateFormatter::NONE,
+			    'Europe/Moscow',
+			    IntlDateFormatter::GREGORIAN,
+			    'dd MMMM'
+			);
+
+			session_start();
 		?>
 
 	<div class="screen">
@@ -43,13 +45,22 @@
 				</h2>
 			</div>
 			<div class="controls">
-				<a id="register" data-bs-toggle="modal" data-bs-target="#registerModal">
-					Регистрация
-				</a>
+				<?php if(isset($_SESSION['name'])): ?>
+					<p>
+						<?php echo $_SESSION['name']; ?>
+					</p>
+					<a id="logout" href="logout.php">
+						Выход
+					</a>
+				<?php else: ?>
+					<a id="register" data-bs-toggle="modal" data-bs-target="#registerModal">
+						Регистрация
+					</a>
 
-				<a id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
-					Вход
-				</a>
+					<a id="login" data-bs-toggle="modal" data-bs-target="#loginModal">
+						Вход
+					</a>
+				<?php endif; ?>
 			</div>
 		</div>
 
@@ -72,9 +83,9 @@
 					<h1>	
 						<!-- <?= date("d F", strtotime($last['max'])) ?> -->
 						<?php
-		                $date = $fmt->format(strtotime($last['max']));
-		echo $date;
-		?>
+			                $date = $fmt->format(strtotime($last['max']));
+							echo $date;
+						?>
 					</h1>
 				</div>
 				<div>
@@ -133,29 +144,45 @@
 		        	<span style="color: gray;">Авторизация</span>
 		        </div>
 		        <div>
-		        	<form>
+		        	<form id="register-form">
 			          <div class="mb-3">
-			            <input type="text" class="form-control py-2" id="name" placeholder="Ваше имя">
+			            <input type="text" class="form-control py-2" name="name" placeholder="Ваше имя" required>
+			            <p id='name-error' class='error'></p>
 			          </div>
 			          <div class="mb-3 control-row">
-			            <input type="email" class="form-control py-2" id="mail" placeholder="Email">
-			            <input type="tel" class="form-control py-2" id="phone" placeholder="Мобильный телефон">
+			          	<div>
+				            <input type="email" class="form-control py-2" name="email" placeholder="Email" required>
+			          		<p id='email-error' class='error'></p>
+			          	</div>
+			          	<div>
+				            <input type="tel" class="form-control py-2" name="phone" placeholder="Мобильный телефон" required>
+				            <p id='phone-error' class='error'></p>
+			            </div>
 			          </div>
 
 			          <div class="mb-3 control-row">
-			            <input type="password" class="form-control py-2" id="pass" placeholder="Пароль">
-			            <input type="password" class="form-control py-2" id="confirm" placeholder="Повторите пароль">
+			          	<div>
+				            <input type="password" class="form-control py-2" name="password" placeholder="Пароль" required>
+				            <p id='password-error' class='error'></p>
+				        </div>
+				        <div>
+				            <input type="password" class="form-control py-2" name="password_confirm" placeholder="Повторите пароль" required>
+				            <p id='password_confirm-error' class='error'></p>
+						</div>
 			          </div>
 
 			          <div class="agreement mt-4">
 				        <div class="mb-3 form-check">
-						    <input type="checkbox" class="form-check-input" id="check">
+				        	<div>
+							    <input type="checkbox" class="form-check-input" name="check">
+				        	</div>
 						    <label class="form-check-label" for="exampleCheck1">Согласен на обработку персональный данных</label>
+				        		<p id='check-error' class='error'></p>
 						</div>
 					  </div>
 
 					  <div class="d-grid gap-2">
-						  <button type="submit" class="btn btn-primary py-2" disabled>Зарегистрироваться</button>
+						  <button type="button" class="btn btn-primary py-2" id="register-button">Зарегистрироваться</button>
 					  </div>
 
 					  <div class="agreement mt-4">
@@ -184,8 +211,8 @@
 		        <div>
 		        	<form>
 			          <div class="mb-3 control-row">
-			            <input type="email" class="form-control py-2" id="mail" placeholder="Email">
-			            <input type="password" class="form-control py-2" id="pass" placeholder="Пароль">
+			            <input type="email" class="form-control py-2" name="mail" placeholder="Email" required>
+			            <input type="password" class="form-control py-2" name="pass" placeholder="Пароль" required>
 			          </div>
 
 					  <div class="d-grid gap-2 mt-2">
@@ -205,16 +232,43 @@
 	</div>
 
 	<script type="text/javascript">
-		// let login = document.getElementById('login');
-		// let register = document.getElementById('register');
+		let registerForm = document.getElementById('register-form');
+		let registerBtn = document.getElementById('register-button');
 
-		// login.addEventListener('click', () => {
-			
-		// });
+		registerBtn.addEventListener('click', () => {
+			if (registerForm.checkValidity()) {
+				// console.log(new FormData(registerForm).values());
+				fetch('/register.php', {
+					method: 'POST',
+					body: new FormData(registerForm)
+				})
+				.then(response => {
+					return response.json();
+				})
+				.then(result => {
+					console.log(result);
+					if(!result.success) {
+						console.log(result.errors);
+						console.log('Регистрация не прошла');
 
-		// register.addEventListener('click', () => {
-			
-		// });
+						for(let [key, value] of Object.entries(result.errors)) {
+							let el = document.getElementById(key+'-error');
+							if (value != 1) {
+								el.innerHTML = value;
+							} else {
+								el.innerHTML = '';
+							}
+						}
+					} else {
+						console.log(result);
+						console.log('Регистрация прошла успешно');
+					}
+				})
+				.catch(error => console.log(error));
+		    } else {
+		    	registerForm.reportValidity();
+		    }
+		});
 	</script>
 
 	</body>
