@@ -147,27 +147,27 @@
 		        <div>
 		        	<form id="register-form">
 			          <div class="mb-3">
-			            <input type="text" class="form-control py-2" name="name" placeholder="Ваше имя" required>
+			            <input id='name-input' type="text" class="form-control py-2" name="name" placeholder="Ваше имя" required>
 			            <p id='name-error' class='error'></p>
 			          </div>
 			          <div class="mb-3 control-row">
 			          	<div>
-				            <input type="email" class="form-control py-2" name="email" placeholder="Email" required>
+				            <input id='email-input' type="email" class="form-control py-2" name="email" placeholder="Email" required>
 			          		<p id='email-error' class='error'></p>
 			          	</div>
 			          	<div>
-				            <input type="tel" class="form-control py-2" name="phone" placeholder="Мобильный телефон" required>
+				            <input id='tel-input' type="tel" class="form-control py-2" name="phone" placeholder="Мобильный телефон" required>
 				            <p id='phone-error' class='error'></p>
 			            </div>
 			          </div>
 
 			          <div class="mb-3 control-row">
 			          	<div>
-				            <input type="password" class="form-control py-2" name="password" placeholder="Пароль" required>
+				            <input id='password-input' type="password" class="form-control py-2" name="password" placeholder="Пароль" required>
 				            <p id='password-error' class='error'></p>
 				        </div>
 				        <div>
-				            <input type="password" class="form-control py-2" name="password_confirm" placeholder="Повторите пароль" required>
+				            <input id='password-confirm-input' type="password" class="form-control py-2" name="password_confirm" placeholder="Повторите пароль" required>
 				            <p id='password_confirm-error' class='error'></p>
 						</div>
 			          </div>
@@ -175,7 +175,7 @@
 			          <div class="agreement mt-4">
 				        <div class="mb-3 form-check">
 				        	<div>
-							    <input type="checkbox" class="form-check-input" name="check">
+							    <input id='check-input' type="checkbox" class="form-check-input" name="check">
 				        	</div>
 						    <label class="form-check-label" for="exampleCheck1">Согласен на обработку персональный данных</label>
 				        		<p id='check-error' class='error'></p>
@@ -253,46 +253,108 @@
 		let noauth = document.getElementById('noauth');
 		let welcome = document.getElementById('welcome');
 
+		// register form
+		let name = document.getElementById('name-input');
+		let pass = document.getElementById('password-input');
+		let pass_confirm = document.getElementById('password-confirm-input');
+		let mail = document.getElementById('email-input');
+		let tel = document.getElementById('tel-input');
+		let check = document.getElementById('check-input');
+
+		let name_error = document.getElementById('name-error');
+		let email_error = document.getElementById('email-error');
+		let phone_error = document.getElementById('phone-error');
+		let pass_error = document.getElementById('password-error');
+		let pass_conf_error = document.getElementById('password_confirm-error');
+		let check_error = document.getElementById('check-error');
+
+		let reg_errors = [name_error,email_error,phone_error,pass_error,pass_conf_error,check_error];
+
 		// register
 		registerBtn.addEventListener('click', () => {
-			if (registerForm.checkValidity()) {
-				// console.log(new FormData(registerForm).values());
-				fetch('/register.php', {
-					method: 'POST',
-					body: new FormData(registerForm)
-				})
-				.then(response => {
-					return response.json();
-				})
-				.then(result => {
+			// if (registerForm.checkValidity()) {
+
+
+			// reset
+			for(let el of reg_errors) {
+				el.innerHTML = '';
+			}
+
+			// validation
+			let name_r = /^[а-яА-Я ]{8,}$/
+			if(!name_r.test(name.value)) {
+				name_error.innerHTML = 'Неправильный формат имени';
+			}
+			if(name.value.length < 8) {
+				name_error.innerHTML = 'Должно быть длиннее 8 символов';
+			}
+
+			let email_r = /^[a-zA-Z0-90_]+@[a-zA-Z][a-zA-Z0-9_]+\.[a-zA-Z][a-zA-Z0-9_]+$/
+			if(!email_r.test(mail.value)) {
+				email_error.innerHTML = 'Неправильный формат почты';
+			}
+
+			let phone_r = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/
+			if(!phone_r.test(tel.value)) {
+				phone_error.innerHTML = 'Неправильный формат телефона';
+			}
+
+			let pass_r = /^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{8,}$/
+			if(!pass_r.test(pass.value)) {
+				pass_error.innerHTML = 'Пароль должен содержать хотя бы одну строчную и цифру';
+			}
+			if(pass.value.length < 8) {
+				pass_error.innerHTML = 'Должен быть длиннее 8 символов';
+			}
+
+			if(pass.value != pass_confirm.value) {
+				pass_conf_error.innerHTML = 'Пароли не совпадают';
+			}
+
+			if(check.checked != true) {
+				check_error.innerHTML = 'Необходимо принять условия';
+			}
+
+			for(let el of reg_errors) {
+				if(el.innerHTML) {
+					console.log('validation errors');
+					return;
+				}
+			}
+
+			// console.log(new FormData(registerForm).values());
+			fetch('/register.php', {
+				method: 'POST',
+				body: new FormData(registerForm)
+			})
+			.then(response => {
+				return response.json();
+			})
+			.then(result => {
+				console.log(result);
+				if(!result.success) {
+					// console.log(result.errors);
+					console.log('Регистрация не прошла');
+
+					if(result.error_text === "Ошибка валидации")
+						check_error.innerHTML = result.error_text;
+					else
+						email_error.innerHTML = result.error_text;
+				} else {
 					console.log(result);
-					if(!result.success) {
-						console.log(result.errors);
-						console.log('Регистрация не прошла');
+					console.log('Регистрация прошла успешно');
 
-						for(let [key, value] of Object.entries(result.errors)) {
-							let el = document.getElementById(key+'-error');
-							if (value != 1) {
-								el.innerHTML = value;
-							} else {
-								el.innerHTML = '';
-							}
-						}
-					} else {
-						console.log(result);
-						console.log('Регистрация прошла успешно');
+                    welcome.innerHTML = `Привет, ${result.name}`;
+					auth.style.display = 'flex';
+					noauth.style.display = 'none';
 
-                        welcome.innerHTML = `Привет, ${result.name}`;
-						auth.style.display = 'flex';
-						noauth.style.display = 'none';
-
-						registerModal.hide();
-					}
-				})
-				.catch(error => console.log(error));
-		    } else {
-		    	registerForm.reportValidity();
-		    }
+					registerModal.hide();
+				}
+			})
+			.catch(error => console.log(error));
+		    // } else {
+		    // 	registerForm.reportValidity();
+		    // }
 		});
 
 		// login
@@ -336,6 +398,8 @@
 					}
 				})
 				.catch(error => console.log(error));
+			} else {
+				loginForm.reportValidity();
 			}
 		})
 
@@ -354,6 +418,12 @@
 				noauth.style.display = 'flex';
 			})
 			.catch(error => console.log(error));
+		})
+
+		mail.addEventListener('keydown', (e) => {
+			// console.log(e.which);
+			if([222].includes(e.which))
+				e.preventDefault();
 		})
 
 		<?php if(isset($_SESSION['name'])): ?>

@@ -15,13 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // validating
     $errors = [];
-
-    $errors['name'] = 1;
-    $errors['email'] = 1;
-    $errors['phone'] = 1;
-    $errors['password'] = 1;
-    $errors['password_confirm'] = 1;
-    $errors['check'] = 1;
+    $error_text = "";
 
     // validating name
     if (empty($_POST['name'])) {
@@ -30,15 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // check length
         if (strlen($_POST['name']) < 8) {
             $errors['name'] = 'Минимальная длина имени 8 символов';
-        }
-
-        // check if exists
-        $user = "SELECT * FROM users WHERE name = :name";
-        $query = $pdo->prepare($user);
-        $query->bindParam( ':name', $_POST['name'], PDO::PARAM_STR);
-        $query->execute();
-        if ($query->rowCount() > 0) {
-            $errors['name'] = 'Пользователь с таким именем уже существует';
         }
     }
 
@@ -93,16 +78,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['check'] = 'Необходимо принять условия';
     }
 
+    if(!empty($errors)) {
+        $error_text = "Ошибка валидации";
+    }
 
+    // check if user exists
+    $user = "SELECT * FROM users WHERE email = :email";
+    $query = $pdo->prepare($user);
+    $query->bindParam( ':email', $_POST['email'], PDO::PARAM_STR);
+    $query->execute();
+    if ($query->rowCount() > 0) {
+        $error_text = 'Пользователь с таким адресом уже зарегистрирован';
+    }
+
+    if($error_text != "") {
+        http_response_code(400);
+        echo json_encode(['error_text' => $error_text, 'success' => false]);
+        exit;   
+    }
 
     // if any element in errors is not 1
-    foreach ($errors as $key => $value) {
-        if ($value !== 1) {
-            http_response_code(400);
-            echo json_encode(['errors' => $errors, 'success' => false]);
-            exit;
-        }
-    }
+    // foreach ($errors as $key => $value) {
+    //     if ($value !== 1) {
+    //         http_response_code(400);
+    //         echo json_encode(['errors' => $errors, 'success' => false]);
+    //         exit;
+    //     }
+    // }
 
     $user = "INSERT INTO users (name,email,phone,password) VALUES (:name, :email, :phone, :password)";
     $query = $pdo->prepare($user);
