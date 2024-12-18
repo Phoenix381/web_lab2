@@ -262,6 +262,18 @@ div.controls a:hover {
     align-items: center;
 }
 
+.image-score {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+
+    color: white;
+/*    opacity: 90%;*/
+
+    font-weight: 500;
+    font-size: 20px;
+}
+
 .clock {
     display: none;
 }

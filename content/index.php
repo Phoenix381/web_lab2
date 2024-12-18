@@ -108,6 +108,10 @@
 							<span class="image-text">Добавлено</span>
 							<span class="image-date"><?= $fmt->format(strtotime($post['created_at']))?></span>
 						</div>
+
+						<div class="image-score">
+							<span><?= htmlspecialchars($post['score']) ?></span>
+						</div>
 					</div>
                 <?php endwhile; ?>
 

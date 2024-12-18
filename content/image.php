@@ -77,15 +77,33 @@
 
 			<div class="content-main">
 				<div class="top-controls">
-					<div>
-						<p class="shaded">
+					<div id="added-date" class="mb-0">
+						<div class="shaded">
 							Добавлено
 							<?php
 								$date = $fmt->format(strtotime($post['created_at']));
 								echo $date;
 							?>
-						</p>
+						</div>
 					</div>
+
+					<div id="score" class="mb-0">
+						<a id="dislike-button" class="dislike-button">
+							<img src="img/dislike.png" class="white" width="24px" />
+						</a>
+
+						<span id="like-count" class="like-count">
+							<?php
+								echo $post['score'];
+							?>
+						</span>
+
+						<a id="like-button" class="like-button">
+							<img src="img/like.png" class="white" width="24px" />
+						</a>
+					</div>
+
+
 					<div class="actions">
 						<a href="upload.html" class="button-normal">
 							<img src="img/add.png" class="white" width="24px" />
@@ -115,10 +133,139 @@
 				<a href="" class="dark-link">Информация о разработчике</a>
 			</div>
 		</div>
+
+
+		<!-- modals -->
+		<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+
+		        <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <div id="register-header" class="mb-4">
+		        	<span>Регистрация</span>
+		        	<span style="color: gray;">Авторизация</span>
+		        </div>
+		        <div>
+		        	<form id="register-form">
+			          <div class="mb-3">
+			            <input id='name-input' type="text" class="form-control py-2" name="name" placeholder="Ваше имя" required>
+			            <p id='name-error' class='error'></p>
+			          </div>
+			          <div class="mb-3 control-row">
+			          	<div>
+				            <input id='email-input' type="email" class="form-control py-2" name="email" placeholder="Email" required>
+			          		<p id='email-error' class='error'></p>
+			          	</div>
+			          	<div>
+				            <input id='tel-input' type="tel" class="form-control py-2" name="phone" placeholder="Мобильный телефон" required>
+				            <p id='phone-error' class='error'></p>
+			            </div>
+			          </div>
+
+			          <div class="mb-3 control-row">
+			          	<div>
+				            <input id='password-input' type="password" class="form-control py-2" name="password" placeholder="Пароль" required>
+				            <p id='password-error' class='error'></p>
+				        </div>
+				        <div>
+				            <input id='password-confirm-input' type="password" class="form-control py-2" name="password_confirm" placeholder="Повторите пароль" required>
+				            <p id='password_confirm-error' class='error'></p>
+						</div>
+			          </div>
+
+			          <div class="agreement mt-4">
+				        <div class="mb-3 form-check">
+				        	<div>
+							    <input id='check-input' type="checkbox" class="form-check-input" name="check">
+				        	</div>
+						    <label class="form-check-label" for="check-input">Согласен на обработку персональный данных</label>
+				        		<p id='check-error' class='error'></p>
+						</div>
+					  </div>
+
+					  <div class="d-grid gap-2">
+						  <button type="button" class="btn btn-primary py-2" id="register-button">Зарегистрироваться</button>
+					  </div>
+
+					  <div class="agreement mt-4">
+					  	<img src="img/info.png"/>
+					  	<span>Все поля обязательны для заполнения</span>
+					  </div>
+			        </form>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+
+		        <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <div id="register-header" class="mb-4">
+		        	<span style="color: gray;">Регистрация</span>
+		        	<span>Авторизация</span>
+		        </div>
+		        <div>
+		        	<form id="login-form">
+			          <div class="mb-3 control-row">
+			          	<div>
+				            <input type="email" class="form-control py-2" name="mail" placeholder="Email" required>
+			          		<p id='mail-error' class='error'></p>
+			          	</div>
+			          	<div>
+				            <input type="password" class="form-control py-2" name="password" placeholder="Пароль" required>
+				            <p id='password-error' class='error'></p>
+				        </div>
+			          </div>
+
+					  <div class="d-grid gap-2 mt-2">
+						  <button type="button" class="btn btn-primary py-2" id="login-button">Войти</button>
+					  </div>
+
+					  <div class="agreement mt-4">
+					  	<img src="img/info.png"/>
+					  	<span>Все поля обязательны для заполнения</span>
+					  </div>
+			        </form>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 	</div>
 
 	<script type="text/javascript">
 		let logoutBtn = document.getElementById('logout-button');
+
+		let likeBtn = document.getElementById('like-button');
+		let dislikeBtn = document.getElementById('dislike-button');
+		let likeCount = document.getElementById('like-count');
+
+		likeBtn.addEventListener('click', () => {
+			fetch('/like.php?id=' + <?php echo $post['id']; ?>)
+			.then(response => {
+				if(response.status === 200) {
+					likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
+				}
+			})
+		})
+
+		dislikeBtn.addEventListener('click', () => {
+			fetch('/dislike.php?id=' + <?php echo $post['id']; ?>)
+			.then(response => {
+				if(response.status === 200) {
+					likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
+				}
+			})
+		})
 
 		// logout
 		logoutBtn.addEventListener('click', () => {

@@ -18,6 +18,7 @@ CREATE TABLE posts (
     content varchar(255) NOT NULL,
     direct_link BOOLEAN NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    score INTEGER NOT NULL DEFAULT 0,
     author_id INTEGER NOT NULL,
     FOREIGN KEY (author_id) REFERENCES users (id)
 );

@@ -97,8 +97,50 @@ div.controls a:hover {
     font-weight: 600;
 }
 
+.modal-header {
+    border: none !important;
+    padding-bottom: 0 !important;
+}
+
+.modal-body {
+    padding-top: 0 !important;
+}
+
 .modal-content {
     border-radius: 20px !important;
+}
+
+
+#register-header {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.control-row {
+    display: flex;
+    gap: 1em;
+}
+
+.agreement {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    justify-content: center !important;
+}
+
+.agreement span {
+    color: grey;
+}
+
+#added-date {
+/*    display: flex;*/
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    margin: 0;
 }
 
 .button:hover {
@@ -239,6 +281,18 @@ div.controls a:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+#like-count {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+#score {
+    display: flex;
+    align-items: center;
+
+    gap: 0.5em;
 }
 
 .actions {
