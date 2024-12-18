@@ -1,4 +1,10 @@
 <?php session_start(); ?>
+<?php 
+	if(!isset($_SESSION['name'])) {
+		header('Location: index.php');
+		exit;
+	}
+?>
 <html>
 
 	<head>
@@ -55,7 +61,10 @@
 						<div id="upload-image">
 							<img src="img/add.png" class="blue upload-add" width="24px" />
 						</div>
-						<input type="file" name="image" id="image-select" class="upload-input" required hidden>
+						<input type="file" name="image" id="image-select" class="upload-input"
+						  accept="image/png, image/jpeg"
+						  required hidden
+						>
 						<div>
 							<span class="hint-text">Загрузите фотографию</span>
 						</div>
@@ -67,6 +76,8 @@
 								максимальный размер - 3 Мб)
 							</span>
 						</div>
+
+						<img id="image-obj" hidden />
 					</div>
 				</div>
 				<div class="upload-controls">
@@ -75,7 +86,7 @@
 						  <button type="submit" class="btn btn-primary py-3 upload-btn">Опубликовать скриншот</button>
 					  </div>
 					<div class=" form-check">
-					    <input type="checkbox" class="form-check-input" id="check">
+					    <input type="checkbox" class="form-check-input" id="check" name="check">
 					    <label class="form-check-label" for="check">Доступен только по прямой ссылке</label>
 					</div>
 				</div>
@@ -101,10 +112,17 @@
 		let imageSelect = document.getElementById('image-select');
 
 		let container = document.getElementById('image-container');
+		let image = document.getElementById('image-obj');
 
 		container.addEventListener('click', () => (
 			imageSelect.click()
 		))
+
+		imageSelect.addEventListener('change', () => {
+			let file = imageSelect.files[0];
+			image.src = URL.createObjectURL(file);
+			image.hidden = false;
+		})
 
 		// logout
 		logoutBtn.addEventListener('click', () => {

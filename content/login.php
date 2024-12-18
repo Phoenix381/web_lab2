@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['mail'] = 'Неправильное имя пользователя или пароль';
         } else {
             $_SESSION['name'] = $user['name'];
+            $_SESSION['user_id'] = $user['id'];
             echo json_encode(['success' => true, 'name' => $user['name']]);
             exit;
         }

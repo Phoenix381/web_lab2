@@ -177,7 +177,7 @@
 				        	<div>
 							    <input id='check-input' type="checkbox" class="form-check-input" name="check">
 				        	</div>
-						    <label class="form-check-label" for="exampleCheck1">Согласен на обработку персональный данных</label>
+						    <label class="form-check-label" for="check-input">Согласен на обработку персональный данных</label>
 				        		<p id='check-error' class='error'></p>
 						</div>
 					  </div>

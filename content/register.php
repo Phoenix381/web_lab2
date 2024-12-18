@@ -118,6 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $query->execute();
 
     $_SESSION['name'] = $_POST['name'];
+    // get id of user
+    $user_id = $pdo->lastInsertId();
+    $_SESSION['user_id'] = $user_id;
     
     http_response_code(200);
     echo json_encode(['success' => true, 'name' => $_POST['name']]);

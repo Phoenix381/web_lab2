@@ -222,6 +222,23 @@ div.controls a:hover {
     font-weight: 400;
 }
 
+#image-obj {
+    
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    border: none;
+    border-radius: 20px;
+
+    margin-top: 0;
+/*    z-index: -1;*/
+}
+
 .upload-hint {
 /*    position: relative;*/
     display: flex;
