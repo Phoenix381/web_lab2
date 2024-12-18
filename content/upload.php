@@ -46,34 +46,42 @@
 		<hr>
 
 		<div class="content">
+			<form id="upload-form" method="post" enctype="multipart/form-data" action="/image_upload.php">
 
 			<div class="content-main">
-				<div class="image-container">
+				<div class="image-container" id="image-container">
 					<!-- <img src=""> -->
 					<div class="upload-hint">
-						<div>
-						<img src="img/add.png" class="blue upload-add" width="24px" />
+						<div id="upload-image">
+							<img src="img/add.png" class="blue upload-add" width="24px" />
 						</div>
+						<input type="file" name="image" id="image-select" class="upload-input" required hidden>
 						<div>
-							
-						<span class="hint-text">Загрузите фотографию</span>
+							<span class="hint-text">Загрузите фотографию</span>
 						</div>
-						<span class="hint-hint">(допустимый формат - jpg, максимальный размер - 3 Мб)</span>
+						<div class="hint-hint">
+							<span>
+								(допустимый формат - jpg, 
+							</span>
+							<span>
+								максимальный размер - 3 Мб)
+							</span>
+						</div>
 					</div>
 				</div>
-					<form>
 				<div class="upload-controls">
 
-					<div class="d-grid gap-2 ">
-						  <button type="submit" class="btn btn-primary py-3" disabled>Опубликовать скриншот</button>
+					<div class="upload-btn-container">
+						  <button type="submit" class="btn btn-primary py-3 upload-btn">Опубликовать скриншот</button>
 					  </div>
 					<div class=" form-check">
 					    <input type="checkbox" class="form-check-input" id="check">
-					    <label class="form-check-label" for="exampleCheck1">Доступен только по прямой ссылке</label>
+					    <label class="form-check-label" for="check">Доступен только по прямой ссылке</label>
 					</div>
 				</div>
-					</form>
 			</div>
+
+			</form>
 		</div>
 
 		<hr>
@@ -90,6 +98,13 @@
 
 	<script type="text/javascript">
 		let logoutBtn = document.getElementById('logout-button');
+		let imageSelect = document.getElementById('image-select');
+
+		let container = document.getElementById('image-container');
+
+		container.addEventListener('click', () => (
+			imageSelect.click()
+		))
 
 		// logout
 		logoutBtn.addEventListener('click', () => {

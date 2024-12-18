@@ -86,6 +86,8 @@ div.controls a:hover {
     background-color: #369FFF !important;
     border-radius: 10px !important;
     border: none !important;
+
+    white-space: nowrap;
 }
 
 .btn:hover {
@@ -197,10 +199,12 @@ div.controls a:hover {
 
     border: 2px dashed grey;
     border-radius: 20px;
+
+    margin-bottom: 1em;
 }
 
 .image-container img {
-    position: absolute;
+/*    position: absolute;*/
     width: 100%;
     border-radius: 20px;
 
@@ -234,18 +238,42 @@ div.controls a:hover {
     max-width: 20px;
     width: 20px;
     height: 20px;
+
+    margin-bottom: 1em;
+}
+
+.hint-hint {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hint-hint span {
+    display: inline-block;white-space: nowrap;
+
 }
 
 .upload-controls {
     display: flex !important;
+    flex-wrap: wrap;
     gap: 2em;
     align-items: center;
+}
+
+.upload-image {
+    max-width: 20px;
+    width: 20px;
+    height: 20px;
+
+/*    margin-bottom: 1em;*/
 }
 
 .form-check {
     display: flex;
     align-items: center;
     gap: 0.5em;
+
+    white-space: nowrap;
 }
 
 .footer {
@@ -269,52 +297,43 @@ div.controls a:hover {
 .mail {
     text-decoration: none;
     font-family: "Inter-light";
+
+    color: #369FFF;
 }
 
 .mail:visited {
-    color: blue;
+    color: #369FFF;
 }
 
-
-@media screen and (max-width: 720px) {
-    .image-container {
-        width: calc(100% * (1/3) - 11px );
+@media screen and (max-width: 1200px) {
+    .screen {
+        margin: 0 2em 0 2em;
     }
 }
 
-@media (max-width: 320px) {
+@media screen and (max-width: 600px) {
+    .upload-controls {
+        display: flex;
+        flex-wrap: wrap-reverse;
+        justify-content: flex-start;
+/*        display:grid;*/
+/*        display: block;*/
+    }
+
+    .upload-controls .upload-btn-container {
+        width: 100%;
+    }
+
+    .upload-btn-container .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 530px) {
+    .screen {
+        margin: 0 0.5em 0 0.5em;
+    }
     .logo-text {
         display: none;
-    }
-
-    .add-text {
-        display: none;
-    }
-
-    .controls {
-        flex-wrap: wrap;
-    }
-
-    .image-container {
-        width: calc(100% * (1/2) - 8px );
-    }
-
-    .footer {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1em;
-    }
-
-    .content-top .button {
-        padding: 1em 1em 1em 1em;
-    }
-
-    .header {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .footer .dark-link {
-        color: gray;
     }
 }

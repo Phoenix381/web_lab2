@@ -90,7 +90,7 @@
 					</h1>
 				</div>
 				<div>
-					<a href="upload.php" class="button-normal">
+					<a href="upload.php" class="button-normal" id="upload-button">
 						<img src="img/add.png" class="white" width="24px" />
 						<span class="add-text"> Добавить скриншот</span>
 					</a>
@@ -253,6 +253,8 @@
 		let noauth = document.getElementById('noauth');
 		let welcome = document.getElementById('welcome');
 
+		let upload = document.getElementById('upload-button');
+
 		// register form
 		let name = document.getElementById('name-input');
 		let pass = document.getElementById('password-input');
@@ -394,6 +396,8 @@
 						auth.style.display = 'flex';
 						noauth.style.display = 'none';
 
+						upload.style.display = 'block';
+
 						loginModal.hide();
 					}
 				})
@@ -416,6 +420,8 @@
 
 				auth.style.display = 'none';
 				noauth.style.display = 'flex';
+
+				upload.style.display = 'none';
 			})
 			.catch(error => console.log(error));
 		})
@@ -430,9 +436,13 @@
 			welcome.innerHTML = 'Привет, <?php echo $_SESSION['name']; ?>';
 			auth.style.display = 'flex';
 			noauth.style.display = 'none';
+
+			upload.style.display = 'block';
 		<?php else: ?>
 			auth.style.display = 'none';
 			noauth.style.display = 'flex';
+
+			upload.style.display = 'none';
 		<?php endif; ?>
 	</script>
 
